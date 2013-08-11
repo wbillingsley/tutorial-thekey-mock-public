@@ -1,0 +1,34 @@
+  apply plugin: 'java'
+  apply plugin: 'eclipse'
+
+  sourceCompatibility = 1.6
+  targetCompatibility = 1.6
+  
+  group = 'com.wbillingsley.tutorials'
+  artifact = 'thekey-mock-publish'
+  version = '0.1'
+  
+
+  repositories {
+    maven {
+      url 'http://deco2800.uqcloud.net/artifactory/everything'
+    }
+    ivy {
+      url 'http://deco2800.uqcloud.net/artifactory/everything'
+    }
+    maven {
+      url 'https://bitbucket.org/wbillingsley/mavenrepo/raw/master/snapshots/'
+    }
+  }
+
+  dependencies {
+    testCompile group: "junit", name: "junit", version: "4.11"
+    testCompile group: "org.mockito", name: "mockito-all", version: "1.9.5"
+    compile group: "com.wbillingsley", name: "salt-encrypt_2.10", version: "0.1-SNAPSHOT"
+    compile group: "com.wbillingsley.tutorials", name: "thekey-mock", version: "0.1"
+  }
+
+
+  jar {
+    manifest.attributes provider: 'gradle'
+  }
