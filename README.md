@@ -20,7 +20,7 @@ In Britain you're going to have to be extra careful. The dead drops produce a cr
 
 Please hurry -- these dead drops are storing a regularly updated feed of information from those agents' phones, and we don't know when the RSS will come to collect them.
 
-If you choose to accept this mission, please clone the repository from [GitHub](https://github.com/UQdeco2800/tutorial-thekey-mock-publish.git) and get to work.
+If you choose to accept this mission, please clone the repository from [GitHub](https://github.com/UQdeco2800/tutorial-thekey-mock-public.git) and get to work.
 The plan is in the tests.
 
 regards,
