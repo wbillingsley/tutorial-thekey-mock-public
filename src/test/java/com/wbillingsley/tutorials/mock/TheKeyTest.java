@@ -42,6 +42,7 @@ public class TheKeyTest {
 		 * Mockito to make us one
 		 */
 		// SpyPhone p = ...
+		SpyPhone p = mock(SpyPhone.class);
 		
 		/*
 		 * Next, we want to try initiating a sync with the dead drop using the 
@@ -49,12 +50,14 @@ public class TheKeyTest {
 		 */
 		// deadDrop.startSync( ...
 		// verify( ...
+		deadDrop.startSync(p, testCode);
+		verify(p).syncData(deadDrop);
 		
 		/*
 		 * We'd better reset the fake phone, or it's going to 
 		 * remember the previous interaction.
 		 */
-		//reset(p);
+		reset(p);
 		
 		/*
 		 * Now let's make sure the dead drop isn't syncing with phones that
@@ -63,11 +66,17 @@ public class TheKeyTest {
 		 * Mockito tells me there's a verify call you can make that could be used
 		 * to check a method's been called zero times.
 		 */
+		// when( ...
+		// deadDrop.startSync( ...
+		// verify( ...
 		Code wrongCode = new Code();
-		// deadDrop.startSync(p, wrongCode);
-		// verify(p, times(0)).syncData(deadDrop);		
+		deadDrop.startSync(p, wrongCode);
+		verify(p, times(0)).syncData(deadDrop);		
 	}
 	
+	
+
+
 	/**
 	 * If that first test is working, our engineering department will be very happy.
 	 * But that's not going to do us much good if those double agents sell us all out
@@ -128,7 +137,7 @@ public class TheKeyTest {
 		 * Ruritanian dead drop.  And sorry, that one found earlier
 		 * won't help us -- it has a different verifier.
 		 */
-		Map<SpyPhone, Verifier> pair = catchTheBritishCrooks(theCode);
+		Map<SpyPhone, Verifier> pair = catchTheBritishCrook(theCode);
 		for (SpyPhone phone : pair.keySet()) {
 			Suspect crook = scenario.getOwnerOf(phone); 
 			assertTrue(scenario.accuseBriton(crook, theCode, pair.get(phone)));				
@@ -157,9 +166,22 @@ public class TheKeyTest {
 	 */
 	private Map<SpyPhone, Code> recordTheAmericanCodes() {
 		
-		final Map<SpyPhone, Code> phoneToCode = new HashMap<SpyPhone, Code>();
+		final Map<SpyPhone, Code> phoneToCode = new java.util.HashMap<SpyPhone, Code>();
 		
-		// You'll need to work out what goes here.
+		DeadDrop d = mock(DeadDrop.class);
+				
+		when(d.startSync(any(SpyPhone.class), any(Code.class))).then(new Answer<Void>() {			
+			@Override
+			public Void answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();				
+				phoneToCode.put((SpyPhone)args[0], ((Code)args[1]));
+				return null;
+			}
+		});
+			
+		for (Suspect s : scenario.getAmericanSuspects()) {
+			s.getPhone().showDeadDrop(d);
+		}
 		
 		return phoneToCode;
 	}
@@ -171,9 +193,17 @@ public class TheKeyTest {
 	private Code findTheCode(Map<SpyPhone, Code> phoneCodes) {
 		SpyPhone p = mock(SpyPhone.class);
 		DeadDrop d = scenario.getAmericanDeadDrop();
+		when(p.syncData(d)).thenThrow(new RuntimeException("Gotcha"));
 		
-		// You'll need to work out what goes here.
-		
+		for (SpyPhone phone: phoneCodes.keySet()) {
+			try {
+				d.startSync(p, phoneCodes.get(phone));
+			} catch (RuntimeException ex) {
+				if (ex.getMessage().equals("Gotcha")) {
+					return phoneCodes.get(phone);
+				}
+			}
+		}
 		return null;
 	}
 	
@@ -193,14 +223,38 @@ public class TheKeyTest {
 	 * that helps you. I guess if there's some way you could make one
 	 * of Mockito's fakes behave as if it was the real thing?
 	 */
-	public Map<SpyPhone, Verifier> catchTheBritishCrooks(final Code theCode) {
+	public Map<SpyPhone, Verifier> catchTheBritishCrook(final Code theCode) {
+		/*
+		 * Play back the codes to the American dead drop, and find out which one syncs!
+		 * We'll need a fake phone for this.
+		 */		
+		final DeadDrop d = scenario.getBritishDeadDrop();
+		DeadDrop middle = mock(DeadDrop.class);
+		
+		final Map<SpyPhone, Verifier> pair = new HashMap<SpyPhone, Verifier>();
+		
+		when(middle.startSync(any(SpyPhone.class), eq(theCode))).thenAnswer(new Answer<Verifier>() {
 
-		final DeadDrop d = scenario.getBritishDeadDrop();		
-		final Map<SpyPhone, Verifier> guilty = new HashMap<SpyPhone, Verifier>();
+			@Override
+			public Verifier answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();
+				
+				Code code = (Code)args[1];
+				SpyPhone phone = (SpyPhone)args[0];
+				Verifier thisV = d.startSync(phone, code);
+				
+				System.out.println("We've caught someone!");
+				pair.put(phone, thisV);
+				return thisV;
+			}
+			
+		});
 		
-		// You'll need to work out what goes here.
+		for (Suspect s : scenario.getBritishSuspects()) {
+			s.getPhone().showDeadDrop(middle);
+		}
 		
-		return guilty;
+		return pair;
 	}	
 	
 }
