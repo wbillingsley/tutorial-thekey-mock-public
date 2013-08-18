@@ -25,7 +25,6 @@
     testCompile group: "junit", name: "junit", version: "4.11"
     testCompile group: "org.mockito", name: "mockito-all", version: "1.9.5"
     compile group: "com.wbillingsley", name: "salt-encrypt_2.10", version: "0.1-SNAPSHOT"
-    compile group: "com.wbillingsley.tutorials", name: "thekey-mock", version: "0.1"
   }
 
 
