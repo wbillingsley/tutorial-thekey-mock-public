@@ -10,23 +10,35 @@
 
   repositories {
     maven {
-      url 'http://hopper.une.edu.au:8081/artifactory/libs-release/'
+      url 'http://hopper.une.edu.au/artifactory/libs-release/'
     }
     ivy {
-      url 'http://hopper.une.edu.au:8081/artifactory/libs-release/'
+      url 'http://hopper.une.edu.au/artifactory/libs-release/'
     }
     maven {
       url 'https://bitbucket.org/wbillingsley/mavenrepo/raw/master/snapshots/'
     }
+    jcenter()
   }
 
   dependencies {
-    testCompile group: "junit", name: "junit", version: "4.12"
-    testCompile group: "org.mockito", name: "mockito-all", version: "1.9.5"
+    // Log4J 2
+    compile group: "org.apache.logging.log4j", name:"log4j-api", version:"2.12.0"
+    compile group: "org.apache.logging.log4j", name:"log4j-core", version:"2.12.0"
+    
+    // JUnit 5
+    testImplementation group: "org.junit.jupiter", name:"junit-jupiter-api", version: "5.4.2"
+    testImplementation group: "org.junit.jupiter", name:"junit-jupiter-engine", version: "5.4.2"
+    
+    testCompile group: "org.mockito", name: "mockito-core", version: "3.+"
     compile group: "com.wbillingsley", name: "salt-encrypt_2.10", version: "0.1-SNAPSHOT"
   }
 
 
   jar {
     manifest.attributes provider: 'gradle'
+  }
+  
+  test {
+    useJUnitPlatform()
   }
