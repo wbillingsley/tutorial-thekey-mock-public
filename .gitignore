@@ -3,6 +3,8 @@
 .settings
 .classpath
 
+.idea/
+
 *.class
 bin
 

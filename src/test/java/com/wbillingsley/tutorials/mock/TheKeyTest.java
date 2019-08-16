@@ -3,12 +3,14 @@ package com.wbillingsley.tutorials.mock;
 import java.util.Map;
 import java.util.HashMap;
 
-import org.junit.Test;
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 public class TheKeyTest {
 
@@ -108,9 +110,10 @@ public class TheKeyTest {
 				phoneToCode.get(phone)
 			);
 		}
-		assertEquals("The map of phones to codes has the wrong size", 
+		assertEquals(
 				scenario.getAmericanSuspects().length, 
-				phoneToCode.keySet().size()
+				phoneToCode.keySet().size(),
+				"The map of phones to codes has the wrong size"
 		);
 		
 		/*
