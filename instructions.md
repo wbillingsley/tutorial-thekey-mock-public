@@ -12,12 +12,7 @@ You may also find [Mockito's documentation](http://https://code.google.com/p/moc
 
 ## How to go about solving the puzzle
 
-1. You're probably going to want to get the project into eclipse
-
-        gradle eclipse
-      
-   Then open up Eclipse, and 
-   `File` &rarr; `Import` &rarr; `Existing project into workspace`
+1. You're probably going to want to get the project into your IDE of choice. I recommend IntelliJ because it works nicely with gradle projects
    
 2. The next thing you should do is *explore*.
 
